@@ -15,7 +15,7 @@ class Skynet:
         self.root = tk.Tk()
         self.root.title("Skynet")
         self.root.geometry("900x500")
-        self.root.iconbitmap("Studenti\\Alessio Mangiagi\\icone\\il_1080xN.5027240208_726d.ico")
+        self.root.iconbitmap("icone\\il_1080xN.5027240208_726d.ico")
         # Imposta il colore di sfondo della finestra    
         self.root.config(bg="#000000")
         self.background_image = None  # Per mantenere il riferimento all'immagine
@@ -51,7 +51,7 @@ class Skynet:
 
         # Carica e imposta l'immagine di sfondo
         try:
-            image = Image.open("Studenti\\Alessio Mangiagi\\icone\\R.jpeg")
+            image = Image.open("icone\\R.jpeg")
             image = image.resize((900, 500), Image.LANCZOS)
             self.background_image = ImageTk.PhotoImage(image)
             bg_label = tk.Label(self.container, image=self.background_image)

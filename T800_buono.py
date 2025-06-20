@@ -15,8 +15,7 @@ class Skynet:
         self.root = tk.Tk()
         self.root.title("Skynet")
         self.root.geometry("900x500")
-        self.root.iconbitmap("icone\\il_1080xN.5027240208_726d.ico")
-        # Imposta il colore di sfondo della finestra    
+        self.root.iconbitmap("icone\\il_1080xN.5027240208_726d.ico")   
         self.root.config(bg="#000000")
         self.background_image = None  # Per mantenere il riferimento all'immagine
         self.pagina()
@@ -29,7 +28,6 @@ class Skynet:
     def create_menu_bar(self):
         menubar = tk.Menu(self.root)
         self.root.config(menu=menubar)
-        
         filemenu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="File", menu=filemenu)
         filemenu.add_command(label="Salva chat", command=self.save_chat_in_test_file, accelerator="Ctrl+S")

@@ -35,7 +35,7 @@ pip install openai python-dotenv Pillow
    ```env
    OPENAI_API_KEY=la_tua_chiave_api
    ```
-2. **Assicurati di avere le immagini e le icone** nei percorsi specificati nel codice (`Studenti/Alessio Mangiagi/icone/`).
+2. **Assicurati di avere le immagini e le icone** nei percorsi specificati nel codice ().
 
 ---
 

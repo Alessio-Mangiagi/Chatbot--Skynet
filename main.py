@@ -41,8 +41,8 @@ class Skynet:
         filemenu.add_command(label="Esci", command=self.quit_app, accelerator="Alt+F4")
         # Aggiungi menu Embedding
         embedding_menu = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label="Embedding", menu=embedding_menu)
-        embedding_menu.add_command(label="Crea/aggiorna embedding", command=self.open_embedding_popup)
+        menubar.add_cascade(label="Personalizza", menu=embedding_menu)
+        embedding_menu.add_command(label="personalizza risposte", command=self.open_embedding_popup)
     
     def salva(self):
         messagebox.showinfo("Salva", "Funzione Salva selezionata")

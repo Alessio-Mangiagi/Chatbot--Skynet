@@ -39,6 +39,10 @@ class Skynet:
         filemenu.add_command(label="Cancella chat", command=self.clear_chat_history)
         filemenu.add_separator()
         filemenu.add_command(label="Esci", command=self.quit_app, accelerator="Alt+F4")
+        # Aggiungi menu Embedding
+        embedding_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Embedding", menu=embedding_menu)
+        embedding_menu.add_command(label="Crea/aggiorna embedding", command=self.open_embedding_popup)
     
     def salva(self):
         messagebox.showinfo("Salva", "Funzione Salva selezionata")
@@ -73,31 +77,35 @@ class Skynet:
 
         self.button = tk.Button(self.text_frame, text="Invia", bg="#767bbc", fg="#000000", font=("Arial", 24), command=self.click_button)
         self.button.pack()
-
-        # Sezione per embedding
-        self.embedding_label = tk.Label(self.text_frame, text="Testo per embedding:", bg="#000000", fg="#ffffff")
-        self.embedding_label.pack()
-        self.embedding_entry = tk.Entry(self.text_frame, width=80)
-        self.embedding_entry.pack()
-        self.embedding_button = tk.Button(self.text_frame, text="Salva embedding", bg="#767bbc", fg="#000000", command=self.embed_text)
-        self.embedding_button.pack()
     
-    def embed_text(self):
-        # Prende il testo dall'entry e genera l'embedding
-        testo = self.embedding_entry.get()
-        if not testo.strip():
-            messagebox.showwarning("Attenzione", "Inserisci un testo da embeddare.")
-            return
-        try:
-            response = self.client.embeddings.create(
-                model="text-embedding-ada-002",
-                input=testo
-            )
-            self.embedded_text = testo
-            self.embedded_vector = np.array(response.data[0].embedding)
-            messagebox.showinfo("Embedding", "Testo embeddato e salvato!")
-        except Exception as e:
-            messagebox.showerror("Errore", f"Errore durante l'embedding: {e}")
+    def open_embedding_popup(self):
+        popup = tk.Toplevel(self.root)
+        popup.title("Crea/aggiorna embedding")
+        popup.geometry("600x200")
+        popup.resizable(False, False)
+        label = tk.Label(popup, text="Testo per embedding:", bg="#000000", fg="#ffffff")
+        label.pack(pady=10)
+        entry = tk.Entry(popup, width=80)
+        entry.pack(pady=5)
+        def salva_embedding():
+            testo = entry.get()
+            if not testo.strip():
+                messagebox.showwarning("Attenzione", "Inserisci un testo da embeddare.")
+                return
+            try:
+                response = self.client.embeddings.create(
+                    model="text-embedding-ada-002",
+                    input=testo
+                )
+                self.embedded_text = testo
+                self.embedded_vector = np.array(response.data[0].embedding)
+                messagebox.showinfo("Embedding", "Testo embeddato e salvato!")
+                popup.destroy()
+            except Exception as e:
+                messagebox.showerror("Errore", f"Errore durante l'embedding: {e}")
+        button = tk.Button(popup, text="Salva embedding", bg="#767bbc", fg="#000000", command=salva_embedding)
+        button.pack(pady=10)
+        popup.grab_set()
 
     def click_button(self):
         input_utente = self.input_testo.get()

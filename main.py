@@ -80,17 +80,17 @@ class Skynet:
     
     def open_embedding_popup(self):
         popup = tk.Toplevel(self.root)
-        popup.title("Crea/aggiorna embedding")
+        popup.title("personalizza risposte")
         popup.geometry("600x200")
         popup.resizable(False, False)
-        label = tk.Label(popup, text="Testo per embedding:", bg="#000000", fg="#ffffff")
+        label = tk.Label(popup, text="inserisci il testo:", bg="#000000", fg="#ffffff")
         label.pack(pady=10)
         entry = tk.Entry(popup, width=80)
         entry.pack(pady=5)
         def salva_embedding():
             testo = entry.get()
             if not testo.strip():
-                messagebox.showwarning("Attenzione", "Inserisci un testo da embeddare.")
+                messagebox.showwarning("Attenzione", "Inserisci un testo.")
                 return
             try:
                 response = self.client.embeddings.create(

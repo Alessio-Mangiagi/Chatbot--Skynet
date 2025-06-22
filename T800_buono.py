@@ -24,6 +24,7 @@ class Skynet:
         self.bind_shortcuts()
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # Inizializzazione del client OpenAI
         self.ultimo_testo_skynet = ""  # Per tenere traccia dell'ultimo testo generato
+        self.root.resizable(False, False)
         
     def create_menu_bar(self):
         menubar = tk.Menu(self.root)

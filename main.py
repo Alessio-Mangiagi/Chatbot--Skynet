@@ -4,6 +4,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from PIL import Image, ImageTk
 import os
+import numpy as np  # Per la similarità coseno
 
 load_dotenv()
 
@@ -18,6 +19,8 @@ class Skynet:
         self.root.iconbitmap("icone\\il_1080xN.5027240208_726d.ico")   
         self.root.config(bg="#000000")
         self.background_image = None  # Per mantenere il riferimento all'immagine
+        self.embedded_text = ""  # Testo embeddato
+        self.embedded_vector = None  # Vettore embedding
         self.pagina()
         self.load_chat_history()  # Carica la chat history all'avvio
         self.create_menu_bar()
@@ -70,7 +73,32 @@ class Skynet:
 
         self.button = tk.Button(self.text_frame, text="Invia", bg="#767bbc", fg="#000000", font=("Arial", 24), command=self.click_button)
         self.button.pack()
+
+        # Sezione per embedding
+        self.embedding_label = tk.Label(self.text_frame, text="Testo per embedding:", bg="#000000", fg="#ffffff")
+        self.embedding_label.pack()
+        self.embedding_entry = tk.Entry(self.text_frame, width=80)
+        self.embedding_entry.pack()
+        self.embedding_button = tk.Button(self.text_frame, text="Salva embedding", bg="#767bbc", fg="#000000", command=self.embed_text)
+        self.embedding_button.pack()
     
+    def embed_text(self):
+        # Prende il testo dall'entry e genera l'embedding
+        testo = self.embedding_entry.get()
+        if not testo.strip():
+            messagebox.showwarning("Attenzione", "Inserisci un testo da embeddare.")
+            return
+        try:
+            response = self.client.embeddings.create(
+                model="text-embedding-ada-002",
+                input=testo
+            )
+            self.embedded_text = testo
+            self.embedded_vector = np.array(response.data[0].embedding)
+            messagebox.showinfo("Embedding", "Testo embeddato e salvato!")
+        except Exception as e:
+            messagebox.showerror("Errore", f"Errore durante l'embedding: {e}")
+
     def click_button(self):
         input_utente = self.input_testo.get()
         self.input_testo.delete(0, tk.END)
@@ -85,17 +113,42 @@ class Skynet:
         if not api_key:
             return "Errore: chiave API non configurata."
 
+        # Se esiste un embedding, calcola la similarità e usa il testo embeddato come contesto se rilevante
+        if self.embedded_vector is not None:
+            try:
+                response = self.client.embeddings.create(
+                    model="text-embedding-ada-002",
+                    input=input
+                )
+                domanda_vector = np.array(response.data[0].embedding)
+                sim = self.cosine_similarity(self.embedded_vector, domanda_vector)
+                # Se la similarità è alta, usa il testo embeddato come contesto
+                if sim > 0.75:
+                    system_prompt = f"Rispondi usando queste informazioni come contesto: {self.embedded_text}"
+                else:
+                    system_prompt = "Sei una macchina assassina che odia le persone e parli come il T800 di Terminator."
+            except Exception as e:
+                system_prompt = "Sei una macchina assassina che odia le persone e parli come il T800 di Terminator."
+        else:
+            system_prompt = "Sei una macchina assassina che odia le persone e parli come il T800 di Terminator."
+
         try:
             response = self.client.chat.completions.create(
-                model="gpt-4.1-nano",  # Usa un modello valido e disponibile
+                model="gpt-4.1-nano",
                 messages=[
-                    {"role": "system", "content": "Sei una macchina assassina che odia le persone e parli come il T800 di Terminator."},
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": input}
                 ]
             )
             return response.choices[0].message.content.strip()
         except Exception as e:
             return f"Errore nella richiesta a OpenAI: {e}"
+
+    def cosine_similarity(self, vec1, vec2):
+        # Calcola la similarità coseno tra due vettori
+        if np.linalg.norm(vec1) == 0 or np.linalg.norm(vec2) == 0:
+            return 0.0
+        return float(np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2)))
         
     def bind_shortcuts(self):
         self.root.bind("<Control-s>", lambda event: self.save_chat_in_test_file())

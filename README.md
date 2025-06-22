@@ -1,6 +1,7 @@
 # 🤖 Skynet Chatbot (T800 Edition)
 
-Benvenuto in **Skynet**, il chatbot ispirato al T800 di Terminator! Questa applicazione desktop, sviluppata in Python con interfaccia grafica Tkinter, ti permette di chattare con una "macchina assassina" che odia gli umani e risponde come il celebre Terminator.
+Benvenuto in **Skynet**, il chatbot ispirato al T800 di Terminator!  
+Questa applicazione desktop, sviluppata in Python con interfaccia grafica Tkinter, ti permette di chattare con una "macchina assassina" che odia gli umani e risponde come il celebre Terminator.
 
 ---
 
@@ -17,7 +18,7 @@ Benvenuto in **Skynet**, il chatbot ispirato al T800 di Terminator! Questa appli
 
 ## 🖥️ Requisiti
 
-- Python 3.8+
+- Python 3.8 o superiore
 - [openai](https://pypi.org/project/openai/)
 - [python-dotenv](https://pypi.org/project/python-dotenv/)
 - [Pillow](https://pypi.org/project/Pillow/)
@@ -35,7 +36,7 @@ pip install openai python-dotenv Pillow
    ```env
    OPENAI_API_KEY=la_tua_chiave_api
    ```
-2. **Assicurati di avere le immagini e le icone** nei percorsi specificati nel codice ().
+2. **Assicurati di avere le immagini e le icone** nella cartella `icone/` come specificato nel codice.
 
 ---
 
@@ -43,8 +44,9 @@ pip install openai python-dotenv Pillow
 
 Esegui il chatbot con:
 ```bash
-python T800_buono.py
+python main.py
 ```
+*(oppure `python T800_buono.py` se il file principale si chiama così nel tuo progetto)*
 
 ---
 
@@ -52,7 +54,7 @@ python T800_buono.py
 
 - La chat viene salvata automaticamente in `chat_history.txt`.
 - L'ultimo testo generato da Skynet può essere salvato in `ultimo_testo_skynet.txt`.
-- Puoi personalizzare prompt, immagini e colori modificando il file `T800_buono.py`.
+- Puoi personalizzare prompt, immagini e colori modificando il file principale (`main.py`).
 
 ---
 
@@ -70,4 +72,7 @@ Alessio Mangiagi
 
 ## ⚠️ Disclaimer
 
-Questo progetto è a scopo didattico e di intrattenimento. Non utilizzare per scopi malevoli.
+Questo progetto è a scopo didattico e di intrattenimento.  
+Non utilizzare per scopi malevoli.
+
+---

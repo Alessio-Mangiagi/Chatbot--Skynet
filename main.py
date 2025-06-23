@@ -27,7 +27,7 @@ class Skynet:
         self.bind_shortcuts()
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # Inizializzazione del client OpenAI
         self.ultimo_testo_skynet = ""  # Per tenere traccia dell'ultimo testo generato
-        self.root.resizable(False, False)
+        self.root.resizable(True, True)
         
     def create_menu_bar(self):
         menubar = tk.Menu(self.root)
@@ -55,29 +55,46 @@ class Skynet:
         self.container = tk.Frame(self.root)
         self.container.pack(fill="both", expand=True)
 
-        # Carica e imposta l'immagine di sfondo
+        # Carica e imposta l'immagine di sfondo (ridimensionabile)
         try:
-            image = Image.open("icone\\R.jpeg")
-            image = image.resize((900, 500), Image.LANCZOS)
-            self.background_image = ImageTk.PhotoImage(image)
-            bg_label = tk.Label(self.container, image=self.background_image)
-            bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+            self.original_bg_image = Image.open("icone\\R.jpeg")
+            self.bg_label = tk.Label(self.container)
+            self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+            self.update_background_image(900, 500)
         except Exception as e:
             print(f"Errore nel caricamento dell'immagine di sfondo: {e}")
 
         # Frame trasparente sopra l'immagine di sfondo
         self.text_frame = tk.Frame(self.container, bg="#000000", bd=0)
-        self.text_frame.place(relx=0.5, rely=0.5, anchor="center")
+        self.text_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-        self.container_testo = tk.Text(self.text_frame, height=20, width=80, bg="#f0f0f0", fg="#000000")
-        self.container_testo.pack()
+        self.container_testo = tk.Text(self.text_frame, height=20, bg="#000000", fg="#00782E", wrap="word")
+        self.container_testo.pack(fill="both", expand=True)
 
-        self.input_testo = tk.Entry(self.text_frame, width=80)
-        self.input_testo.pack()
+        self.input_testo = tk.Entry(self.text_frame)
+        self.input_testo.pack(fill="x", expand=False, pady=(5, 0))
 
-        self.button = tk.Button(self.text_frame, text="Invia", bg="#767bbc", fg="#000000", font=("Arial", 24), command=self.click_button)
-        self.button.pack()
-    
+        self.button = tk.Button(self.text_frame, text="Invia", bg="#000000", fg="#CE0000", font=("Arial", 24), command=self.click_button)
+        self.button.pack(fill="x", expand=False, pady=(5, 0))
+
+        # Bind per ridimensionamento dinamico
+        self.root.bind("<Configure>", self.on_resize)
+
+    def update_background_image(self, width, height):
+        # Aggiorna l'immagine di sfondo in base alle dimensioni della finestra
+        if hasattr(self, "original_bg_image"):
+            resized = self.original_bg_image.resize((max(1, width), max(1, height)), Image.LANCZOS)
+            self.background_image = ImageTk.PhotoImage(resized)
+            self.bg_label.config(image=self.background_image)
+
+    def on_resize(self, event):
+        # Ridimensiona l'immagine di sfondo e aggiorna i widget
+        if event.widget == self.root:
+            w = event.width
+            h = event.height
+            self.update_background_image(w, h)
+            # Puoi aggiungere qui altre logiche di ridimensionamento se necessario
+
     def open_embedding_popup(self):
         popup = tk.Toplevel(self.root)
         popup.title("personalizza risposte")
